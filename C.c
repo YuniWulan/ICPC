@@ -8,40 +8,37 @@ typedef struct {
 
 typedef struct {
     Pair *pairs;
-    int size;
-    int capacity;
+    int ukuran;
+    int kapasitas;
 } Map;
 
-// Function to initialize the map
 void initMap(Map *map) {
-    map->size = 0;
-    map->capacity = 10;
-    map->pairs = (Pair *)malloc(map->capacity * sizeof(Pair));
+    map->ukuran = 0;
+    map->kapasitas = 10;
+    map->pairs = (Pair *)malloc(map->kapasitas * sizeof(Pair));
 }
 
-// Function to add or update a key-value pair in the map
 void addToMap(Map *map, int key) {
 	int i;
-    for (i = 0; i < map->size; i++) {
+    for (i = 0; i < map->ukuran; i++) {
         if (map->pairs[i].key == key) {
             map->pairs[i].value++;
             return;
         }
     }
-    if (map->size == map->capacity) {
-        map->capacity *= 2;
-        map->pairs = (Pair *)realloc(map->pairs, map->capacity * sizeof(Pair));
+    if (map->ukuran == map->kapasitas) {
+        map->kapasitas *= 2;
+        map->pairs = (Pair *)realloc(map->pairs, map->kapasitas * sizeof(Pair));
     }
-    map->pairs[map->size].key = key;
-    map->pairs[map->size].value = 1;
-    map->size++;
+    map->pairs[map->ukuran].key = key;
+    map->pairs[map->ukuran].value = 1;
+    map->ukuran++;
 }
 
-// Function to get the maximum frequency from the map
 int getMaxFrequency(Map *map) {
     int maxFreq = 0;
     int i;
-    for (i = 0; i < map->size; i++) {
+    for (i = 0; i < map->ukuran; i++) {
         if (map->pairs[i].value > maxFreq) {
             maxFreq = map->pairs[i].value;
         }
@@ -50,48 +47,45 @@ int getMaxFrequency(Map *map) {
 }
 
 int main() {
-    int N;
-    scanf("%d", &N); // Read the number of chunks
+    int n;
+    scanf("%d", &n);
 
-    int *peanut = (int *)malloc(N * sizeof(int)); // Array to store peanut values
+    int *kacang = (int *)malloc(n * sizeof(int)); 
     int i;
-    for (i = 0; i < N; i++) {
-        scanf("%d", &peanut[i]); // Read the peanut bits for each chunk
+    for (i = 0; i < n; i++) {
+        scanf("%d", &kacang[i]);
     }
 
-    int *jumlah = (int *)malloc(N * sizeof(int)); // Array to store sum of pairs
-    jumlah[0] = 0; // Initialize the first element of jumlah array
+    int *jumlah = (int *)malloc(n * sizeof(int)); 
+    jumlah[0] = 0;
 
-    // Process sums of consecutive chunks
     int j;
-    for (j = 0; j < N - 1; j++) {
-        int total = peanut[j] + peanut[j + 1]; // Sum of two consecutive chunks
+    for (j = 0; j < n - 1; j++) {
+        int total = kacang[j] + kacang[j + 1];
         if (jumlah[j] != total) {
-            jumlah[j + 1] = total; // If the sum is not equal to the previous sum, store it
+            jumlah[j + 1] = total; 
         } else {
-            jumlah[j + 1] = 0; // Otherwise, set to 0
+            jumlah[j + 1] = 0; 
         }
     }
 
     Map freq;
-    initMap(&freq); // Initialize the map for storing frequency of sums
+    initMap(&freq);
 
-    // Add all the sums to the map if they are not 0
     int l;
-    for (l = 0; l < N; l++) {
+    for (l = 0; l < n; l++) {
         if (jumlah[l] != 0) {
-            addToMap(&freq, jumlah[l]); // Update the frequency of the sum
+            addToMap(&freq, jumlah[l]); 
         }
     }
 
-    int maxFreq = getMaxFrequency(&freq); // Get the maximum frequency from the map
-    printf("%d\n", maxFreq); // Print the result
+    int maxFreq = getMaxFrequency(&freq); 
+    printf("%d\n", maxFreq);
 
-    // Free the allocated memory
-    free(peanut);
+    
+    free(kacang);
     free(jumlah);
     free(freq.pairs);
 
     return 0;
 }
-
